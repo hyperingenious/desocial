@@ -7,22 +7,32 @@ import {
   Paper,
   Group,
   Button,
-  Divider,
-  Checkbox,
   Anchor,
   Stack,
   Center,
   Input,
 } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
-import { useState } from "react";
-import { signUp } from "../supabase/auth/auth";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getUser, login, signUp } from "../appwrite/auth/auth";
+import { usePostContext } from "../contexts/PostContext";
 
 export default function Login(props) {
-  const [buttonState, setButtonState]= useState('idle')
-  const [type, toggle] = useToggle(["register", "login"]);
+  const [buttonState, setButtonState]= useState('idle') // state is loading when's loading
+  const [type, toggle] = useToggle(["login","register"]);
   const navigate = useNavigate();
+
+  const {
+    user:{setUserId}
+  } = usePostContext();
+
+  useEffect(function () {
+    async function checkAuth() {
+      await getUser(navigate, setUserId);
+    }
+    checkAuth();
+  },[]);
 
   const form = useForm({
     initialValues: {
@@ -34,7 +44,7 @@ export default function Login(props) {
     },
 
     validate: {
-      name: (val) => (val !== "" ? null: "Must not be empty" ),
+      name: (val) => (val !== ""|| type === 'login' ? null: "Must not be empty" ),
       email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
       password: (val) =>
         val.length <= 6
@@ -43,11 +53,22 @@ export default function Login(props) {
     },
   });
 
-  function handelSubmit(values) {
-    if (type === "register") {
-      signUp({email:values.email, password: values.password, name: values.name, course: values.course, semester: values.semester, setButtonState, navigate})
+  async function handleSubmit(values) {
+    setButtonState('loading'); // Set loading state
+  
+    try {
+      if (type === "register") {
+        await signUp({ email: values.email, password: values.password, name: values.name, course: values.course, semester: values.semester, navigate, setUserId });
+      } else if (type === "login") {
+        await login({ email: values.email, password: values.password, navigate, setUserId });
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setButtonState('idle'); // Reset to idle
     }
   }
+  
 
   return (
     <Center maw={"100%"} h={"100vh"} pt={"xl"}>
@@ -56,7 +77,7 @@ export default function Login(props) {
           Welcome to Mantine, {type} with
         </Text>
 
-        <form onSubmit={form.onSubmit(handelSubmit)}>
+        <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack>
             {type === "register" && (
               <TextInput
@@ -130,6 +151,7 @@ export default function Login(props) {
                 form.setFieldValue("password", event.currentTarget.value)
               }
               error={
+  
                 form.errors.password &&
                 "Password should include at least 6 characters"
               }
