@@ -37,7 +37,7 @@ export default function Register(props) {
   return (
     <Paper radius="md" p="xl" withBorder {...props}>
       <Text size="lg" fw={500}>
-        Welcome to Mantine, {type} with
+        Welcome to desocial, {type} with
       </Text>
 
       <Group grow mb="md" mt="md">
@@ -64,7 +64,7 @@ export default function Register(props) {
           <TextInput
             required
             label="Email"
-            placeholder="hello@mantine.dev"
+            placeholder="rajkumar@mantine.com"
             value={form.values.email}
             onChange={(event) =>
               form.setFieldValue("email", event.currentTarget.value)

@@ -1,11 +1,19 @@
-import { Account, Client, Databases, Storage } from "appwrite";
+import { Client, Databases, Storage } from "appwrite";
+import conf from "../helpers/conf";
 
-export const client = new Client()
-  .setEndpoint(import.meta.env.VITE_APPWRITE_URL) // Your API Endpoint
-  .setProject(import.meta.env.VITE_APPWRITE_ID); // Your project ID
+export class AppwriteService {
+  client;
+  databases;
+  storage;
 
-export const databases = new Databases(client);
+  constructor() {
+    this.client = new Client()
+      .setEndpoint(conf.appwriteUrl) // Your API Endpoint
+      .setProject(conf.appwriteId); // Your project ID
+    this.databases = new Databases(this.client);
+    this.storage = new Storage(this.client);
+  }
+}
 
-export const account = new Account(client);
-
-export const storage = new Storage(client);
+const appwriteService = new AppwriteService();
+export default appwriteService;

@@ -5,20 +5,23 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AppShell from "./pages/app-shell/AppShell";
 import Feed from "./pages/feed/Feed";
 import Login from "./pages/Login";
+import Profile from "./pages/profile/Profile";
+import "./custom.css";
 
 export default function App() {
   const theme = createTheme({
-    fontFamily: 'Verdana, sans-serif',
-    fontFamilyMonospace: 'Monaco, Courier, monospace',
-    headings: { fontFamily: 'Greycliff CF, sans-serif' },
+    fontFamily: "Verdana, sans-serif",
+    fontFamilyMonospace: "Monaco, Courier, monospace",
+    headings: { fontFamily: "Greycliff CF, sans-serif" },
   });
-  
+
   return (
-    <MantineProvider theme={theme}>
+    <MantineProvider theme={theme} >
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<AppShell />}>
             <Route path="feed" element={<Feed />} />
+            <Route path="profile/:userId" element={<Profile />} />
           </Route>
           <Route path="/authenticate" element={<Login />} />
         </Routes>

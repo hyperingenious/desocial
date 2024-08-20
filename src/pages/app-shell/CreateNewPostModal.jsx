@@ -9,16 +9,17 @@ import {
   Textarea,
   Text,
   Loader,
+  ActionIcon,
 } from "@mantine/core";
 import { IconPhotoPlus, IconUpload, IconX } from "@tabler/icons-react";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import React, { useEffect } from "react";
 import { usePostContext } from "../../contexts/PostContext";
+import { useState } from "react";
 
 export default function CreateNewPostModal() {
   const {
     image: { image, setImage },
-    post: { postText, setPostText, postState },
+    post: { postState },
     modal: {
       modalState: createNewPostModalState,
       modalMethods: { closeCreateNewPostModal },
@@ -26,7 +27,8 @@ export default function CreateNewPostModal() {
     handleCreateNewPost,
   } = usePostContext();
 
- 
+  const [postText, setPostText] = useState("");
+
   return (
     <Modal
       styles={{
@@ -45,7 +47,7 @@ export default function CreateNewPostModal() {
           alt="it's me"
         />
         <Textarea
-          onChange={(e) => setPostText(e.target.value)}
+          onChange={(e) => {setPostText(e.target.value)}}
           value={postText}
           variant="unstyled"
           size="md"
@@ -83,7 +85,7 @@ export default function CreateNewPostModal() {
         <Group justify="flex-end" mt={"xs"}>
           <Button
             variant="gradient"
-            onClick={handleCreateNewPost}
+            onClick={() => handleCreateNewPost({ postText , setPostText})}
             disabled={!postText.length || postText.length > 280 ? true : false}
             radius={"xl"}
             size="sm"
@@ -140,7 +142,9 @@ function DZ({ setImage }) {
       </Dropzone.Reject>
       <Dropzone.Idle>
         <Group>
-          <IconPhotoPlus size={14} />
+        <ActionIcon variant="light" size="xl" radius="xl" aria-label="Settings">
+      <IconPhotoPlus style={{ width: '70%', height: '70%' }} stroke={1.5} />
+    </ActionIcon>
         </Group>
       </Dropzone.Idle>
     </Dropzone>

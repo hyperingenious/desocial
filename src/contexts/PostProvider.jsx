@@ -2,12 +2,10 @@ import { useDisclosure } from "@mantine/hooks";
 import { PostContext } from "./PostContext";
 import { useState } from "react";
 import { creatPost } from "../appwrite/create/createPost";
-import { Notification } from "@mantine/core";
-
+ 
 export function PostProvider({ children }) {
   const [postState, setPostState] = useState("idle");
   const [image, setImage] = useState(null);
-  const [postText, setPostText] = useState("");
   const [
     createNewPostModalState,
     { open: openCreateNewPostModal, close: closeCreateNewPostModal },
@@ -19,10 +17,9 @@ export function PostProvider({ children }) {
     closeCreateNewPostModal();
     setPostState("idle" );
     setImage(null);
-    setPostText("");
   }
 
-  async function handleCreateNewPost() {
+  async function handleCreateNewPost({ postText , setPostText}) {
     if (!postText.length || postText.length > 280) return;
 
     try {
@@ -32,6 +29,7 @@ export function PostProvider({ children }) {
     
 
       cleanUp();
+      setPostText("");
     } catch (err) {
       setPostState("error");
       console.error(err);
@@ -41,7 +39,7 @@ export function PostProvider({ children }) {
 
   const value = {
     image: { image, setImage },
-    post: { postText, setPostText, postState, setPostState },
+    post: { postState, setPostState },
     modal: {
       modalState: createNewPostModalState,
       modalMethods: {

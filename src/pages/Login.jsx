@@ -15,24 +15,24 @@ import {
 import { IconChevronDown } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getUser, login, signUp } from "../appwrite/auth/auth";
+import authService from "../appwrite/auth/auth";
 import { usePostContext } from "../contexts/PostContext";
 
 export default function Login(props) {
-  const [buttonState, setButtonState]= useState('idle') // state is loading when's loading
-  const [type, toggle] = useToggle(["login","register"]);
+  const [buttonState, setButtonState] = useState("idle"); // state is loading when's loading
+  const [type, toggle] = useToggle(["login", "register"]);
   const navigate = useNavigate();
 
   const {
-    user:{setUserId}
+    user: { setUserId },
   } = usePostContext();
 
   useEffect(function () {
     async function checkAuth() {
-      await getUser(navigate, setUserId);
+      await authService.getUser(navigate, setUserId);
     }
     checkAuth();
-  },[]);
+  }, []);
 
   const form = useForm({
     initialValues: {
@@ -44,7 +44,8 @@ export default function Login(props) {
     },
 
     validate: {
-      name: (val) => (val !== ""|| type === 'login' ? null: "Must not be empty" ),
+      name: (val) =>
+        val !== "" || type === "login" ? null : "Must not be empty",
       email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
       password: (val) =>
         val.length <= 6
@@ -54,27 +55,29 @@ export default function Login(props) {
   });
 
   async function handleSubmit(values) {
-    setButtonState('loading'); // Set loading state
-  
+    setButtonState("loading"); // Set loading state
+
     try {
       if (type === "register") {
-        await signUp({ email: values.email, password: values.password, name: values.name, course: values.course, semester: values.semester, navigate, setUserId });
+        await authService.signUp({ ...values, setUserId });
+        navigate("/feed");
+
       } else if (type === "login") {
-        await login({ email: values.email, password: values.password, navigate, setUserId });
+        await authService.login({ ...values, setUserId });
+        navigate("/feed");
       }
     } catch (error) {
       console.error("Error:", error);
     } finally {
-      setButtonState('idle'); // Reset to idle
+      setButtonState("idle"); // Reset to idle
     }
   }
-  
 
   return (
-    <Center maw={"100%"} h={"100vh"} pt={"xl"}>
+    <Center maw={"100%"} h={"100vh"} pt={"xl"} style={{backgroundImage: 'url(/src/assets/danger.jpg)'}}>
       <Paper maw={400} radius="md" p="xl" withBorder {...props}>
         <Text size="lg" fw={500} mb={"sm"}>
-          Welcome to Mantine, {type} with
+          Welcome to desocial, {type} with
         </Text>
 
         <form onSubmit={form.onSubmit(handleSubmit)}>
@@ -94,12 +97,10 @@ export default function Login(props) {
               <>
                 <Input.Wrapper label="Course" description="" error="">
                   <Input
-              
                     onChange={(event) =>
                       form.setFieldValue("course", event.target.value)
                     }
-                    defaultValue={'BCA'}
-
+                    defaultValue={"BCA"}
                     component="select"
                     rightSection={<IconChevronDown size={14} stroke={1.5} />}
                     pointer
@@ -133,7 +134,7 @@ export default function Login(props) {
             <TextInput
               required
               label="Email"
-              placeholder="hello@mantine.dev"
+              placeholder="rajkumar@mail.dev"
               value={form.values.email}
               onChange={(event) =>
                 form.setFieldValue("email", event.currentTarget.value)
@@ -151,7 +152,6 @@ export default function Login(props) {
                 form.setFieldValue("password", event.currentTarget.value)
               }
               error={
-  
                 form.errors.password &&
                 "Password should include at least 6 characters"
               }
@@ -171,7 +171,11 @@ export default function Login(props) {
                 ? "Already have an account? Login"
                 : "Don't have an account? Register"}
             </Anchor>
-            <Button type="submit" disabled={buttonState ==='loading'? true: false} radius="xl">
+            <Button
+              type="submit"
+              disabled={buttonState === "loading" ? true : false}
+              radius="xl"
+            >
               {upperFirst(type)}
             </Button>
           </Group>

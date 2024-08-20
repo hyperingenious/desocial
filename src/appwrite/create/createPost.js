@@ -1,5 +1,6 @@
 import { ID } from "appwrite";
-import { databases, storage } from "../appwrite";
+import appwriteService, { AppwriteService } from "../appwrite";
+import conf from "../../helpers/conf";
 
 export async function creatPost({ image, postText, userId }) {
   try {
@@ -9,9 +10,9 @@ export async function creatPost({ image, postText, userId }) {
       imageId = imageData.$id;
     }
 
-    await databases.createDocument(
-      import.meta.env.VITE_DATABASE_ID,
-      import.meta.env.VITE_POST_COLLECTION_ID,
+    await appwriteService.databases.createDocument(
+      conf.databaseId,      
+      conf.postCollectionId,
       ID.unique(),
       {
         user: userId,
@@ -28,10 +29,9 @@ export async function creatPost({ image, postText, userId }) {
 }
 
 async function uploadImage(image) {
-  console.log(image);
-  try {
-    const data = await storage.createFile(
-      import.meta.env.VITE_PRIMARY_BUCKET_ID,
+   try {
+    const data = await appwriteService.storage.createFile(
+      conf.primaryBucketId,
       ID.unique(),
       image
     );
