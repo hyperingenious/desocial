@@ -10,6 +10,7 @@ import {
   Stack,
   Tooltip,
   Divider,
+  Modal,
 } from "@mantine/core";
 import {
   IconDots,
@@ -24,10 +25,25 @@ import {
   intToRoman,
 } from "../helpers/little_helpers";
 import { Link } from "react-router-dom";
+import { useDisclosure } from "@mantine/hooks";
+import { useState } from "react";
 
 function Post({ document }) {
+  const [opened, { open, close }] = useDisclosure(false);
+  const [currentZoomedImage, setCurrentZoomedImage] = useState(null);
+  function handleImageClick() {
+    open();
+    setCurrentZoomedImage(document?.image_url);
+  }
   return (
     <>
+      <Modal
+        styles={{header: {display:'none'}, body: { padding: 0 } }}
+        opened={opened}
+        onClose={close}
+      >
+        <Image radius="sm"  src={currentZoomedImage} />
+      </Modal>
       <Card radius="md">
         <Card.Section inheritPadding py={"xs"}>
           <Group style={{ alignItems: "flex-start" }} wrap="nowrap">
@@ -46,10 +62,12 @@ function Post({ document }) {
                 <Group bg="var(--mantine-color-body)">
                   <Text
                     fw={500}
-
                     size="md"
                     c={"black"}
-                    style={{ textDecoration: "none", fontFamily: "TwitterFont, sans-serif" }} 
+                    style={{
+                      textDecoration: "none",
+                      fontFamily: "TwitterFont, sans-serif",
+                    }}
                   >
                     {document?.user?.name}
                   </Text>
@@ -107,9 +125,12 @@ function Post({ document }) {
               {document?.image_url && (
                 <Card.Section mt="xs" px={"sm"} mb={0} shadow={"sm"}>
                   <Image
+                    style={{ cursor: "pointer" }}
                     radius="lg"
-                    w={300}
+                    miw={250}
+                    maw={300}
                     h={200}
+                    onClick={handleImageClick}
                     src={document?.image_url}
                   />
                 </Card.Section>
