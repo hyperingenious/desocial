@@ -29,12 +29,11 @@ export function AuthProvider({ children }) {
   );
 
   const value = {
+    setUser,
     authState,
     isAuthenticated,
     user,
   };
 
-    return (
-      <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-    );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

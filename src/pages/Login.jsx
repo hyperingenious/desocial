@@ -1,6 +1,18 @@
 import { useToggle, upperFirst } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
-import {TextInput,PasswordInput,Text,Paper,Group,Button,Anchor,Stack,Center,Input,Loader,} from "@mantine/core";
+import {
+  TextInput,
+  PasswordInput,
+  Text,
+  Paper,
+  Group,
+  Button,
+  Anchor,
+  Stack,
+  Center,
+  Input,
+  Loader,
+} from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -14,8 +26,7 @@ export default function Login() {
   useEffect(() => {
     if (isAuthenticated) navigate("/feed");
   }, [isAuthenticated, navigate]);
-      console.log(isAuthenticated);
-
+  console.log(isAuthenticated);
 
   return (
     <>
@@ -30,6 +41,7 @@ export default function Login() {
 }
 
 function LoginContent(props) {
+  const { setUser } = useAuthContext();
   const [buttonState, setButtonState] = useState("idle"); // state is loading when's loading
   const [type, toggle] = useToggle(["login", "register"]);
   const navigate = useNavigate();
@@ -58,10 +70,10 @@ function LoginContent(props) {
 
     try {
       if (type === "register") {
-        await authService.signUp({ ...values });
+        await authService.signUp({ ...values, setUser });
         navigate("/feed");
       } else if (type === "login") {
-        await authService.login({ ...values });
+        await authService.login({ ...values, setUser });
         navigate("/feed");
       }
     } catch (error) {

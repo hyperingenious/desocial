@@ -10,15 +10,15 @@ class AuthService extends AppwriteService {
     this.account = new Account(this.client);
   }
 
-  async signUp({ email, password, name, course, semester, setUserId }) {
+  async signUp({ email, password, name, course, semester, setUser }) {
     const { $id } = await this.account.create(ID.unique(), email, password);
-    await this.login({ email, password, setUserId });
+    await this.login({ email, password, setUser });
     await this.createUserDocument({ name, course, semester, userId: $id });
   }
 
-  async login({ email, password, setUserId }) {
+  async login({ email, password, setUser }) {
     const data = await this.account.createEmailPasswordSession(email, password);
-    setUserId(data.$id);
+    setUser(data);
   }
 
   async getUser(setUser, setIsAuthenticated) {
