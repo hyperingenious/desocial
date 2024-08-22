@@ -1,12 +1,13 @@
 import "@mantine/core/styles.css";
 
 import { createTheme, MantineProvider } from "@mantine/core";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import AppShell from "./pages/app-shell/AppShell";
 import Feed from "./pages/feed/Feed";
 import Login from "./pages/Login";
 import Profile from "./pages/profile/Profile";
 import "./custom.css";
+import Chat from "./pages/chat/Chat";
 
 export default function App() {
   const theme = createTheme({
@@ -16,16 +17,15 @@ export default function App() {
   });
 
   return (
-    <MantineProvider theme={theme} >
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<AppShell />}>
-            <Route path="feed" element={<Feed />} />
-            <Route path="profile/:userId" element={<Profile />} />
-          </Route>
-          <Route path="/authenticate" element={<Login />} />
-        </Routes>
-      </BrowserRouter>
+    <MantineProvider theme={theme}>
+      <Routes>
+        <Route path="/" element={<AppShell />}>
+          <Route path="feed" element={<Feed />} />
+          <Route path="profile/:userId" element={<Profile />} />
+          <Route path="chat/:id" element={<Chat />} />
+        </Route>
+        <Route path="/authenticate" element={<Login />} />
+      </Routes>
     </MantineProvider>
   );
 }

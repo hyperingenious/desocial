@@ -1,39 +1,38 @@
 import { useToggle, upperFirst } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
-import {
-  TextInput,
-  PasswordInput,
-  Text,
-  Paper,
-  Group,
-  Button,
-  Anchor,
-  Stack,
-  Center,
-  Input,
-} from "@mantine/core";
+import {TextInput,PasswordInput,Text,Paper,Group,Button,Anchor,Stack,Center,Input,Loader,} from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import authService from "../appwrite/auth/auth";
-import { usePostContext } from "../contexts/PostContext";
+import { useAuthContext } from "../contexts/AuthContext";
 
-export default function Login(props) {
+export default function Login() {
+  const navigate = useNavigate();
+  const { isAuthenticated, authState } = useAuthContext();
+
+  useEffect(() => {
+    if (isAuthenticated) navigate("/feed");
+  }, [isAuthenticated, navigate]);
+      console.log(isAuthenticated);
+
+
+  return (
+    <>
+      {!isAuthenticated && <LoginContent />}
+      {authState === "loading" && (
+        <Center h={100}>
+          <Loader color="blue" type="oval" />
+        </Center>
+      )}
+    </>
+  );
+}
+
+function LoginContent(props) {
   const [buttonState, setButtonState] = useState("idle"); // state is loading when's loading
   const [type, toggle] = useToggle(["login", "register"]);
   const navigate = useNavigate();
-
-  const {
-    user: { setUserId },
-  } = usePostContext();
-
-  useEffect(function () {
-    async function checkAuth() {
-      await authService.getUser(navigate, setUserId);
-    }
-    checkAuth();
-  }, []);
-
   const form = useForm({
     initialValues: {
       email: "",
@@ -59,11 +58,10 @@ export default function Login(props) {
 
     try {
       if (type === "register") {
-        await authService.signUp({ ...values, setUserId });
+        await authService.signUp({ ...values });
         navigate("/feed");
-
       } else if (type === "login") {
-        await authService.login({ ...values, setUserId });
+        await authService.login({ ...values });
         navigate("/feed");
       }
     } catch (error) {
@@ -72,9 +70,13 @@ export default function Login(props) {
       setButtonState("idle"); // Reset to idle
     }
   }
-
   return (
-    <Center maw={"100%"} h={"100vh"} pt={"xl"} style={{backgroundImage: 'url(/src/assets/danger.jpg)'}}>
+    <Center
+      maw={"100%"}
+      h={"100vh"}
+      pt={"xl"}
+      style={{ backgroundImage: "url(/src/assets/danger.jpg)" }}
+    >
       <Paper maw={400} radius="md" p="xl" withBorder {...props}>
         <Text size="lg" fw={500} mb={"sm"}>
           Welcome to desocial, {type} with

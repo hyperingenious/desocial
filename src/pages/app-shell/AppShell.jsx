@@ -1,30 +1,50 @@
 import { useEffect } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { AppShell as Shell, Burger, Group, Skeleton } from "@mantine/core";
+import { Outlet, useNavigate } from "react-router-dom";
+import {
+  AppShell as Shell,
+  Burger,
+  Group,
+  Skeleton,
+  Center,
+  Loader,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import authService from "../../appwrite/auth/auth";
 import CreateNew from "./CreateNew";
 import CreateNewPostModal from "./CreateNewPostModal";
 import { usePostContext } from "../../contexts/PostContext";
+import { useAuthContext } from "../../contexts/AuthContext";
 
 export default function AppShell() {
-  const [opened, { toggle }] = useDisclosure();
+  const { isAuthenticated, authState } = useAuthContext();
   const navigate = useNavigate();
-const location = useLocation();
+
+  useEffect(
+    function () {
+      if (authState === "error") navigate("/authenticate");
+      if (isAuthenticated) navigate("/feed");
+    },
+    [authState, isAuthenticated, navigate]
+  );
+
+  return (
+    <>
+      {isAuthenticated && <ShellContent />}
+      {authState === "loading" && (
+        <Center h={100}>
+          <Loader color="blue" type="oval" />
+        </Center>
+      )}
+    </>
+  );
+}
+
+function ShellContent() {
+  const [opened, { toggle }] = useDisclosure();
   const {
     modal: {
       modalMethods: { openCreateNewPostModal },
     },
-    user:{setUserId}
   } = usePostContext();
-
-  useEffect(function () {
-    
-    async function checkAuth() {
-      await authService.getUser(navigate, setUserId, location.pathname);
-    }
-    checkAuth();
-  }, []);
 
   return (
     <>
@@ -81,6 +101,7 @@ const location = useLocation();
           style={{
             paddingInlineEnd: "calc(var(--app-shell-aside-offset, 0rem))",
             paddingInlineStart: "calc(var(--app-shell-navbar-offset, 0rem)",
+            paddingTop: "calc(var(--app-shell-header-offset, 0rem))",
           }}
         >
           <Outlet />

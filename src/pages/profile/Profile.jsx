@@ -8,6 +8,7 @@ import {
   Loader,
   Group,
   ActionIcon,
+  Center,
 } from "@mantine/core";
 import Post from "../../components/Post";
 import { useEffect } from "react";
@@ -21,32 +22,40 @@ export default function Profile() {
 
   const location = useLocation();
   const userId = location.pathname.split("/")[2];
-const navigate = useNavigate()
-  useEffect(function () {
+  const navigate = useNavigate();
+
+  useEffect(() => {
     async function fetchProfile() {
       await startFetchingProfiles(userId);
     }
     fetchProfile();
-  }, []);
+  }, [userId, startFetchingProfiles]);
 
   return (
     <>
       <Group>
-        <ActionIcon onClick={() => navigate(-1)}
+        <ActionIcon
+          onClick={() => navigate(-1)}
           variant="default"
           color="gray"
           size="lg"
           radius="xl"
+          m={"xs"}
           aria-label="Settings"
         >
-          <IconArrowLeft
-            style={{ width: "70%", height: "70%" }}
-            stroke={1.5}
-          />
+          <IconArrowLeft style={{ width: "70%", height: "70%" }} stroke={1.5} />
         </ActionIcon>
       </Group>
-      {state == "loading" ||
-        (state == "idle" && <Loader color="blue" type="bars" />)}
+      {state == "loading" && (
+        <Center maw={400} h={100}>
+          <Loader color="blue" type="oval" />
+        </Center>
+      )}
+      {state == "idle" && (
+        <Center maw={400} h={100}>
+          <Loader color="blue" type="oval" />
+        </Center>
+      )}
       {state == "finished" && profileData && profilePostsData && (
         <>
           <ProfileData profileData={profileData} />
@@ -62,9 +71,9 @@ function AllPosts({ postsData }) {
   return (
     <>
       <Divider mb={"xs"} />
-      {postsData.map(el => 
+      {postsData.map((el) => (
         <Post document={el} />
-      )}
+      ))}
     </>
   );
 }
@@ -82,7 +91,6 @@ function ProfileData({ profileData }) {
         mx="auto"
       />
 
-     
       <Text my={"xs"} style={{ display: "flex", justifyContent: "center" }}>
         <Badge variant="light" size="lg" color="gray">
           {profileData.course}
@@ -96,7 +104,7 @@ function ProfileData({ profileData }) {
       {/* <Text ta="center" c="dimmed" fz="sm">
         My Intersts ivle dance and cing dacing dacning only and only
       </Text> */}
-      <Button variant="default" fullWidth mt="md">
+      <Button radius={"lg"} variant="default" fullWidth mt="md">
         Send message
       </Button>
     </Paper>

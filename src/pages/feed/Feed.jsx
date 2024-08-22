@@ -1,20 +1,23 @@
 import { useEffect } from "react";
 import Post from "../../components/Post";
 import { useFeedContext } from "../../contexts/FeedContext"; // Fix the typo and ensure the import path is correct
-import { Group, Loader, Stack, Text } from "@mantine/core";
+import { Loader, Stack, Text } from "@mantine/core";
+import { useAuthContext } from "../../contexts/AuthContext";
 
 function Feed() {
+  const { isAuthenticated } = useAuthContext();
   const {
     startFetchingFeed,
     state: { feedState, feedPostsData },
   } = useFeedContext(); // Destructure the necessary state or methods
 
   useEffect(() => {
+    if (!isAuthenticated) return;
     async function fetchPosts() {
       await startFetchingFeed();
     }
     fetchPosts();
-  }, []);
+  }, [startFetchingFeed, isAuthenticated]);
 
   if (feedState === "idle") {
     return (

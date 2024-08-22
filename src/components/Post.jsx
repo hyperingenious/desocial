@@ -31,13 +31,15 @@ import { useState } from "react";
 function Post({ document }) {
   const [opened, { open, close }] = useDisclosure(false);
   const [currentZoomedImage, setCurrentZoomedImage] = useState(null);
+  
   function handleImageClick() {
-    open();
+    open(); 
     setCurrentZoomedImage(document?.image_url);
   }
   return (
     <>
       <Modal
+        centered
         styles={{header: {display:'none'}, body: { padding: 0 } }}
         opened={opened}
         onClose={close}
@@ -51,10 +53,10 @@ function Post({ document }) {
               style={{ textDecoration: "none" }}
               to={`/profile/${document?.user?.$id}`}
             >
-              {document.avatar_url && (
-                <Avatar src={document?.avatar_url} alt={"user"} />
+              {document.user.avatar_url && (
+                <Avatar src={document.user.avatar_url} alt={"user"} />
               )}
-              {!document?.avatar_url && <Avatar radius="xl" />}
+              {!document?.user.avatar_url && <Avatar radius="xl" />}
             </Link>
 
             <Stack w={"100%"} gap={0} mr={"sm"}>

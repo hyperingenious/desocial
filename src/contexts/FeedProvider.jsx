@@ -1,7 +1,7 @@
 import { useReducer } from "react";
 import { FeedContext } from "./FeedContext";
 import { fetchFeedPosts } from "../appwrite/feed/fetchFeedPosts";
-import { usePostContext } from "./PostContext";
+import { useAuthContext } from "./AuthContext";
 
 const initialState = {
   feedState: "idle",
@@ -33,7 +33,8 @@ function reducer(state, action) {
 
 
 export function FeedProvider({ children }) {
-  const {user: {userId}} = usePostContext();
+  const authContext = useAuthContext();
+  const userId = authContext.user ? authContext.user.$id : null;
   const [state, dispatch] = useReducer(reducer, initialState);
 
   async function startFetchingFeed() {

@@ -2,8 +2,12 @@ import { useDisclosure } from "@mantine/hooks";
 import { PostContext } from "./PostContext";
 import { useState } from "react";
 import { creatPost } from "../appwrite/create/createPost";
- 
+import { useAuthContext } from "./AuthContext";
+
 export function PostProvider({ children }) {
+const authContext = useAuthContext();
+const userId = authContext.user ? authContext.user.$id : null;
+
   const [postState, setPostState] = useState("idle");
   const [image, setImage] = useState(null);
   const [
@@ -11,22 +15,19 @@ export function PostProvider({ children }) {
     { open: openCreateNewPostModal, close: closeCreateNewPostModal },
   ] = useDisclosure(false);
 
-  const [userId, setUserId] = useState(null);
-
   function cleanUp() {
     closeCreateNewPostModal();
-    setPostState("idle" );
+    setPostState("idle");
     setImage(null);
   }
 
-  async function handleCreateNewPost({ postText , setPostText}) {
+  async function handleCreateNewPost({ postText, setPostText }) {
     if (!postText.length || postText.length > 280) return;
 
     try {
       setPostState("loading");
       await creatPost({ image: image?.file, postText, userId });
       setPostState("finished");
-    
 
       cleanUp();
       setPostText("");
@@ -48,7 +49,6 @@ export function PostProvider({ children }) {
       },
     },
     handleCreateNewPost,
-    user: { setUserId, userId },
   };
 
   return <PostContext.Provider value={value}>{children}</PostContext.Provider>;
