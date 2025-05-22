@@ -1,0 +1,102 @@
+{
+    "projectId": "682e2145001a831543ad",
+    "projectName": "desocial",
+    "settings": {
+        "services": {
+            "account": true,
+            "avatars": true,
+            "databases": true,
+            "locale": true,
+            "health": true,
+            "storage": true,
+            "teams": true,
+            "users": true,
+            "functions": true,
+            "graphql": true,
+            "messaging": true
+        },
+        "auth": {
+            "methods": {
+                "jwt": true,
+                "phone": true,
+                "invites": true,
+                "anonymous": true,
+                "email-otp": true,
+                "magic-url": true,
+                "email-password": true
+            },
+            "security": {
+                "duration": 31536000,
+                "limit": 0,
+                "sessionsLimit": 10,
+                "passwordHistory": 0,
+                "passwordDictionary": false,
+                "personalDataCheck": false,
+                "sessionAlerts": false,
+                "mockNumbers": []
+            }
+        }
+    },
+    "databases": [
+        {
+            "$id": "682e215e003de205d3dd",
+            "name": "desocialdb",
+            "enabled": true
+        }
+    ],
+    "collections": [
+        {
+            "$id": "(unique())",
+            "databaseId": "682e215e003de205d3dd",
+            "name": "user",
+            "documentSecurity": true,
+            "attributes": [],
+            "indexes": [],
+            "enabled": true
+        },
+        {
+            "$id": "682e22b7002249148ec7",
+            "databaseId": "682e215e003de205d3dd",
+            "name": "user",
+            "documentSecurity": true,
+            "attributes": [],
+            "indexes": [],
+            "enabled": true
+        },
+        {
+            "$id": "682e22fb0024603d5370",
+            "databaseId": "682e215e003de205d3dd",
+            "name": "post",
+            "documentSecurity": true,
+            "attributes": [],
+            "indexes": [],
+            "enabled": true
+        },
+        {
+            "$id": "682e2313002d3cd81a52",
+            "databaseId": "682e215e003de205d3dd",
+            "name": "likes",
+            "documentSecurity": true,
+            "attributes": [],
+            "indexes": [],
+            "enabled": true
+        },
+        {
+            "$id": "682e2328001926aefb6b",
+            "databaseId": "682e215e003de205d3dd",
+            "name": "messages",
+            "documentSecurity": true,
+            "attributes": [],
+            "indexes": [],
+            "enabled": true
+        }
+    ],
+    "buckets": [
+        {
+            "$id": "682e2351000c9be8390d",
+            "name": "desocial_bucket",
+            "fileSecurity": true,
+            "enabled": true
+        }
+    ]
+}
