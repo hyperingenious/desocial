@@ -1,13 +1,6 @@
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import {
-  AppShell as Shell,
-  Burger,
-  Group,
-  Skeleton,
-  Center,
-  Loader,
-} from "@mantine/core";
+import { AppShell as Shell, Burger, Group, Skeleton, Center, Loader, } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import CreateNew from "./CreateNew";
 import CreateNewPostModal from "./CreateNewPostModal";
