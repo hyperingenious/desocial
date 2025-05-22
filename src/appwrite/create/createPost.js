@@ -1,5 +1,5 @@
 import { ID } from "appwrite";
-import appwriteService, { AppwriteService } from "../appwrite";
+import appwriteService from "../appwrite";
 import conf from "../../helpers/conf";
 
 export async function creatPost({ image, postText, userId }) {
@@ -11,14 +11,14 @@ export async function creatPost({ image, postText, userId }) {
     }
 
     await appwriteService.databases.createDocument(
-      conf.databaseId,      
+      conf.databaseId,
       conf.postCollectionId,
       ID.unique(),
       {
         user: userId,
         post_text: postText,
         ...(image && {
-          image_url: `https://cloud.appwrite.io/v1/storage/buckets/66be6a410005c2d0b001/files/${imageId}/view?project=6572f5a9d22d854a74a0&mode=admin`,
+image_url: `https://fra.cloud.appwrite.io/v1/storage/buckets/682e2351000c9be8390d/files/${imageId}/view?project=682e2145001a831543ad&mode=admin`
         }),
       }
     );
@@ -29,7 +29,7 @@ export async function creatPost({ image, postText, userId }) {
 }
 
 async function uploadImage(image) {
-   try {
+  try {
     const data = await appwriteService.storage.createFile(
       conf.primaryBucketId,
       ID.unique(),
