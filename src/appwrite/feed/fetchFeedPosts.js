@@ -1,4 +1,4 @@
-import appwriteService, { AppwriteService } from "../appwrite";
+import appwriteService from "../appwrite";
 import conf from "../../helpers/conf";
 
 export async function fetchFeedPosts() {
