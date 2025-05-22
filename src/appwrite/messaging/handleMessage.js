@@ -17,7 +17,6 @@ export class HandleMessage extends AppwriteService {
           test: message,
         }
       );
-        console.log('message created');
     } catch (error) {
       throw error;
     }
@@ -30,10 +29,8 @@ export class HandleMessage extends AppwriteService {
       ],
       (response) => {
         // Log when a new file is uploaded
-        console.log(response);
       }
     );
-    console.log("Subscribed to messages collection");
   }
 }
 
