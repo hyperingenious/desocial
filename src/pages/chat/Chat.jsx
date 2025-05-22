@@ -18,7 +18,6 @@ export default function Chat() {
   const thestate = usePostContext()
 
   useEffect(() => {
-    console.log(thestate);
     async function hhi() {
       await initializeChat(userId);
     }

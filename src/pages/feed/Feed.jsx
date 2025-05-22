@@ -10,14 +10,13 @@ function Feed() {
     startFetchingFeed,
     state: { feedState, feedPostsData },
   } = useFeedContext(); // Destructure the necessary state or methods
-
-  useEffect(() => {
+useEffect(() => {
     if (!isAuthenticated) return;
     async function fetchPosts() {
       await startFetchingFeed();
     }
     fetchPosts();
-  }, [startFetchingFeed, isAuthenticated]);
+  }, [isAuthenticated]);
 
   if (feedState === "idle") {
     return (
@@ -32,6 +31,7 @@ function Feed() {
       </Stack>
     );
   }
+
   if (feedState === "loading") {
     return (
       <Stack
@@ -52,14 +52,11 @@ function Feed() {
 
   if (feedState === "finished") {
     return (
-      <>
-        <div>
-          {feedPostsData.map((document) => {
-            if (!document?.user) return;
-            return <Post key={document.$id} document={document} />;
-          })}
-        </div>
-      </>
+      <Stack spacing="md">
+        {feedPostsData.map((document) => 
+         <Post key={document.$id} document={document} />
+        )}
+      </Stack>
     );
   }
 }

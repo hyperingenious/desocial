@@ -1,4 +1,3 @@
-
 const conf = {
   appwriteId: import.meta.env.VITE_APPWRITE_ID,
   appwriteUrl: import.meta.env.VITE_APPWRITE_URL,

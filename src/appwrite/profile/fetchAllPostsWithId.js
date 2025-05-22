@@ -9,8 +9,8 @@ export async function fetchAllPostsWithId(userId) {
       conf.postCollectionId,
       [Query.equal("user", [userId])]
     );
-    const refiedData  = {...data, documents: data.documents.reverse()}
-    return refiedData
+    const refiedData = { ...data, documents: data.documents.reverse() };
+    return refiedData;
   } catch (error) {
     throw error;
   }
