@@ -26,7 +26,6 @@ export default function Login() {
   useEffect(() => {
     if (isAuthenticated) navigate("/feed");
   }, [isAuthenticated, navigate]);
-  console.log(isAuthenticated);
 
   return (
     <>
