@@ -7,7 +7,7 @@ import { FeedProvider } from "./contexts/FeedProvider.jsx";
 import { ProfileProvider } from "./contexts/ProfileProvider.jsx";
 import { MessageProvider } from "./contexts/MessageProvider.jsx";
 import { AuthProvider } from "./contexts/AuthProvider.jsx";
-import { BrowserRouter, Routes } from "react-router-dom";
+import { BrowserRouter, } from "react-router-dom";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
