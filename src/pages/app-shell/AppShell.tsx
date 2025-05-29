@@ -1,6 +1,13 @@
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { AppShell as Shell, Burger, Group, Skeleton, Center, Loader, } from "@mantine/core";
+import {
+  AppShell as Shell,
+  Burger,
+  Group,
+  Skeleton,
+  Center,
+  Loader,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import CreateNew from "./CreateNew";
 import CreateNewPostModal from "./CreateNewPostModal";
@@ -8,15 +15,26 @@ import { usePostContext } from "../../contexts/PostContext";
 import { useAuthContext } from "../../contexts/AuthContext";
 
 export default function AppShell() {
-  const { isAuthenticated, authState } = useAuthContext();
+  const auth = useAuthContext();
   const navigate = useNavigate();
+
+  let isAuthenticated;
+  let authState;
+
+  if (auth !== null) {
+    isAuthenticated = auth.isAuthenticated;
+    authState = auth.authState;
+  }
 
   useEffect(
     function () {
-      if (authState === "error") navigate("/authenticate");
-      if (isAuthenticated) navigate("/feed");
+      if (auth !== null) {
+        const { isAuthenticated, authState } = auth;
+        if (authState === "error") navigate("/authenticate");
+        if (isAuthenticated) navigate("/feed");
+      }
     },
-    [authState, isAuthenticated, navigate]
+    [auth, navigate]
   );
 
   return (
