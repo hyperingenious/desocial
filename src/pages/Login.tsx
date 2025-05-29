@@ -18,10 +18,21 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import authService from "../appwrite/auth/auth";
 import { useAuthContext } from "../contexts/AuthContext";
+import type { Models } from "appwrite";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { isAuthenticated, authState } = useAuthContext();
+  const auth = useAuthContext();
+
+  if (!auth) {
+    return (
+      <Center h={100}>
+        <Loader color="blue" type="oval" />
+      </Center>
+    );
+  }
+
+  const { isAuthenticated, authState } = auth;
 
   useEffect(() => {
     if (isAuthenticated) navigate("/feed");
@@ -39,11 +50,22 @@ export default function Login() {
   );
 }
 
-function LoginContent(props) {
-  const { setUser } = useAuthContext();
-  const [buttonState, setButtonState] = useState("idle"); // state is loading when's loading
+function LoginContent() {
+  const auth = useAuthContext();
+  const [buttonState, setButtonState] = useState("idle");
   const [type, toggle] = useToggle(["login", "register"]);
   const navigate = useNavigate();
+
+  if (!auth) {
+    return (
+      <Center h={100}>
+        <Loader color="blue" type="oval" />
+      </Center>
+    );
+  }
+
+  const { setUser } = auth;
+
   const form = useForm({
     initialValues: {
       email: "",
@@ -64,8 +86,20 @@ function LoginContent(props) {
     },
   });
 
-  async function handleSubmit(values) {
-    setButtonState("loading"); // Set loading state
+  interface HandleSubmit {
+    email: string;
+    password: string;
+    name: string;
+    course: string;
+    semester: number;
+    setUser: React.Dispatch<
+      React.SetStateAction<
+        Models.Session | Models.User<Models.Preferences> | null
+      >
+    >;
+  }
+  async function handleSubmit(values: HandleSubmit) {
+    setButtonState("loading");
 
     try {
       if (type === "register") {
@@ -78,9 +112,10 @@ function LoginContent(props) {
     } catch (error) {
       console.error("Error:", error);
     } finally {
-      setButtonState("idle"); // Reset to idle
+      setButtonState("idle");
     }
   }
+
   return (
     <Center
       maw={"100%"}
@@ -130,7 +165,6 @@ function LoginContent(props) {
                     onChange={(event) =>
                       form.setFieldValue("semester", event.target.value)
                     }
-                    label="semester"
                     component="select"
                     defaultValue={1}
                     rightSection={<IconChevronDown size={14} stroke={1.5} />}
@@ -186,7 +220,7 @@ function LoginContent(props) {
             </Anchor>
             <Button
               type="submit"
-              disabled={buttonState === "loading" ? true : false}
+              disabled={buttonState === "loading"}
               radius="xl"
             >
               {upperFirst(type)}
