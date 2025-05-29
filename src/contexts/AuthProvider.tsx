@@ -2,11 +2,28 @@ import { useEffect, useState } from "react";
 import authService from "../appwrite/auth/auth";
 import { AuthContext } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
+import type { Models } from "appwrite";
 
-export function AuthProvider({ children }) {
-  const [authState, setAuthState] = useState("idle");
+  type AuthContextValue = {
+    setUser: React.Dispatch<
+      React.SetStateAction<
+        Models.Session | Models.User<Models.Preferences> | null
+      >
+    >;
+    authState: "idle" | "loading" | "finished" | "error";
+    isAuthenticated: boolean;
+    user: Models.Session | Models.User<Models.Preferences> | null;
+  };
+
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [authState, setAuthState] = useState<
+    "idle" | "loading" | "finished" | "error"
+  >("idle");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<
+    Models.Session | Models.User<Models.Preferences> | null
+  >(null);
   const navigate = useNavigate();
 
   useEffect(
@@ -28,7 +45,7 @@ export function AuthProvider({ children }) {
     [navigate]
   );
 
-  const value = {
+  const value: AuthContextValue = {
     setUser,
     authState,
     isAuthenticated,
@@ -37,3 +54,4 @@ export function AuthProvider({ children }) {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
+export type {AuthContextValue}
