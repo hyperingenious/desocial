@@ -1,9 +1,8 @@
 import { createContext, useContext } from "react";
+import type { FeedContextValue } from "./FeedProvider";
 
-// Create the AuthContext
-export const FeedContext = createContext();
+export const FeedContext = createContext<FeedContextValue | null>(null);
 
-// Custom hook to use the AuthContext
 export function useFeedContext() {
   return useContext(FeedContext);
 }
