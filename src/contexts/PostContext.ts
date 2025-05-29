@@ -1,9 +1,12 @@
-import  { createContext, useContext } from 'react';
+import { createContext, useContext } from 'react';
+import type { PostContextValue } from './PostProvider';
 
-// Create the AuthContext
-export const PostContext = createContext();
+export const PostContext = createContext<PostContextValue | null>(null);
 
-// Custom hook to use the AuthContext
 export function usePostContext() {
-  return useContext(PostContext);
+  const context = useContext(PostContext);
+  if (!context) {
+    throw new Error('usePostContext must be used within a PostProvider');
+  }
+  return context;
 }

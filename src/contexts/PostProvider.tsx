@@ -3,13 +3,52 @@ import { PostContext } from "./PostContext";
 import { useState } from "react";
 import { creatPost } from "../appwrite/create/createPost";
 import { useAuthContext } from "./AuthContext";
+import type { FileWithPath } from "@mantine/dropzone";
 
-export function PostProvider({ children }) {
-const authContext = useAuthContext();
-const userId = authContext.user ? authContext.user.$id : null;
+type PostContextValue = {
+  image: {
+    image: null | {
+      file: FileWithPath;
+      url: string;
+    };
+    setImage: React.Dispatch<
+      React.SetStateAction<null | {
+        file: FileWithPath;
+        url: string;
+      }>
+    >;
+  };
+  post: {
+    postState: "loading" | "finished" | "idle" | "error";
+    setPostState: React.Dispatch<
+      React.SetStateAction<"loading" | "finished" | "idle" | "error">
+    >;
+  };
+  modal: {
+    modalState: boolean;
+    modalMethods: {
+      openCreateNewPostModal: () => void;
+      closeCreateNewPostModal: () => void;
+    };
+  };
+  handleCreateNewPost: (params: {
+    postText: string;
+    setPostText: React.Dispatch<React.SetStateAction<string>>;
+  }) => Promise<void>;
+};
 
-  const [postState, setPostState] = useState("idle");
-  const [image, setImage] = useState(null);
+export function PostProvider({ children }: { children: React.ReactNode }) {
+  const authContext = useAuthContext();
+  const userId = authContext.user ? authContext.user.$id : null;
+
+  const [postState, setPostState] = useState<
+    "loading" | "finished" | "idle" | "error"
+  >("idle");
+  const [image, setImage] = useState<null | {
+    file: FileWithPath;
+    url: string;
+  }>(null);
+
   const [
     createNewPostModalState,
     { open: openCreateNewPostModal, close: closeCreateNewPostModal },
@@ -21,7 +60,13 @@ const userId = authContext.user ? authContext.user.$id : null;
     setImage(null);
   }
 
-  async function handleCreateNewPost({ postText, setPostText }) {
+  async function handleCreateNewPost({
+    postText,
+    setPostText,
+  }: {
+    postText: string;
+    setPostText: React.Dispatch<React.SetStateAction<string>>;
+  }) {
     if (!postText.length || postText.length > 280) return;
 
     try {
@@ -37,8 +82,7 @@ const userId = authContext.user ? authContext.user.$id : null;
       throw err;
     }
   }
-
-  const value = {
+  const value: PostContextValue = {
     image: { image, setImage },
     post: { postState, setPostState },
     modal: {
@@ -53,3 +97,4 @@ const userId = authContext.user ? authContext.user.$id : null;
 
   return <PostContext.Provider value={value}>{children}</PostContext.Provider>;
 }
+export type { PostContextValue };
