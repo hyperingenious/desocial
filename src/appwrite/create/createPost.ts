@@ -1,8 +1,15 @@
 import { ID } from "appwrite";
 import appwriteService from "../appwrite";
 import conf from "../../helpers/conf";
+import type { FileWithPath } from "@mantine/dropzone";
 
-export async function creatPost({ image, postText, userId }) {
+interface CreatePost {
+  image?: FileWithPath;
+  postText: string;
+  userId: string;
+}
+
+export async function creatPost({ image, postText, userId }: CreatePost) {
   try {
     let imageId;
     if (image) {
@@ -18,7 +25,7 @@ export async function creatPost({ image, postText, userId }) {
         user: userId,
         post_text: postText,
         ...(image && {
-image_url: `https://fra.cloud.appwrite.io/v1/storage/buckets/682e2351000c9be8390d/files/${imageId}/view?project=682e2145001a831543ad&mode=admin`
+          image_url: `https://fra.cloud.appwrite.io/v1/storage/buckets/682e2351000c9be8390d/files/${imageId}/view?project=682e2145001a831543ad&mode=admin`,
         }),
       }
     );
@@ -28,16 +35,11 @@ image_url: `https://fra.cloud.appwrite.io/v1/storage/buckets/682e2351000c9be8390
   }
 }
 
-async function uploadImage(image) {
-  try {
-    const data = await appwriteService.storage.createFile(
-      conf.primaryBucketId,
-      ID.unique(),
-      image
-    );
-
-    return data;
-  } catch (error) {
-    throw error;
-  }
+async function uploadImage(image: FileWithPath) {
+  const data = await appwriteService.storage.createFile(
+    conf.primaryBucketId,
+    ID.unique(),
+    image
+  );
+  return data;
 }
