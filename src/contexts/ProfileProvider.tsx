@@ -2,14 +2,37 @@ import { useReducer } from "react";
 import { fetchProfileWithId } from "../appwrite/profile/fetchProfileWithId";
 import { fetchAllPostsWithId } from "../appwrite/profile/fetchAllPostsWithId";
 import { ProfileContext } from "./ProfileContext";
+import type { Models } from "appwrite";
 
-const initialState = {
+type InitialState = {
+  state: "idle" | "error" | "loading" | "finished";
+  profileData: Models.Document | null;
+  profilePostsData: Models.Document[] | null;
+};
+
+const initialState: InitialState = {
   state: "idle",
   profileData: null,
   profilePostsData: null,
 };
 
-function reducer(state, action) {
+type Action =
+  | {
+      type: "SET_STATE_DATA";
+      payload: {
+        profileData: Models.Document;
+        postData: {
+          documents: Models.Document[];
+          total: number;
+        };
+      };
+    }
+  | { type: "SET_STATE_LOADING" }
+  | { type: "SET_STATE_IDLE" }
+  | { type: "SET_STATE_ERROR" }
+  | { type: "CLEAN_UP" };
+
+function reducer(state: InitialState, action: Action): InitialState {
   switch (action.type) {
     case "SET_STATE_DATA":
       return {
@@ -38,14 +61,22 @@ function reducer(state, action) {
         ...initialState,
       };
     default:
-      throw new Error(`Unhandled action type: ${action.type}`);
+      throw new Error(`Unhandled action type: ${(action as Action).type}`);
   }
 }
 
-export function ProfileProvider({ children }) {
+type ProfileContextValue = {
+  state: "idle" | "error" | "loading" | "finished";
+  profileData: Models.Document | null;
+  profilePostsData: Models.Document[] | null;
+  dispatch: React.ActionDispatch<[action: Action]>;
+  startFetchingProfiles: (userId: string) => Promise<void>;
+};
+
+export function ProfileProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  async function startFetchingProfiles(userId) {
+  async function startFetchingProfiles(userId: string): Promise<void> {
     dispatch({ type: "SET_STATE_LOADING" });
     try {
       const postData = await fetchAllPostsWithId(userId);
@@ -58,9 +89,15 @@ export function ProfileProvider({ children }) {
     }
   }
 
+  const value: ProfileContextValue = {
+    ...state,
+    dispatch,
+    startFetchingProfiles,
+  };
+
   return (
-    <ProfileContext.Provider value={{ ...state, dispatch, startFetchingProfiles }}>
-      {children}
-    </ProfileContext.Provider>
+    <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>
   );
 }
+
+export type { ProfileContextValue };
