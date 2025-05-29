@@ -1,3 +1,5 @@
+/// <reference types="vite/client" />
+
 const conf = {
   appwriteId: import.meta.env.VITE_APPWRITE_ID,
   appwriteUrl: import.meta.env.VITE_APPWRITE_URL,
@@ -7,6 +9,6 @@ const conf = {
   likesCollectionId: import.meta.env.VITE_LIKES_COLLECTION_ID,
   messagesCollectionId: import.meta.env.VITE_MESSAGES_COLLECTION_ID,
   primaryBucketId: import.meta.env.VITE_PRIMARY_BUCKET_ID,
-};
+} as const;
 
 export default conf;

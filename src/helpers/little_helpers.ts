@@ -1,14 +1,5 @@
-export function formatDateToCustomString(isoString) {
+export function formatDateToCustomString(isoString: string) {
   const date = new Date(isoString);
-
-  const options = {
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  };
 
   const time = date.toLocaleString("en-US", {
     hour: "numeric",
@@ -24,7 +15,7 @@ export function formatDateToCustomString(isoString) {
   return `${time} · ${dayMonthYear}`;
 }
 
-export function intToRoman(num) {
+export function intToRoman(num: number) {
   const romanNumerals = [
     { value: 1000, symbol: "M" },
     { value: 900, symbol: "CM" },
