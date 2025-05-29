@@ -12,7 +12,11 @@ import {
   ActionIcon,
 } from "@mantine/core";
 import { IconPhotoPlus, IconUpload, IconX } from "@tabler/icons-react";
-import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import {
+  Dropzone,
+  IMAGE_MIME_TYPE,
+  type FileWithPath,
+} from "@mantine/dropzone";
 import { usePostContext } from "../../contexts/PostContext";
 import { useState } from "react";
 
@@ -47,7 +51,9 @@ export default function CreateNewPostModal() {
           alt="it's me"
         />
         <Textarea
-          onChange={(e) => {setPostText(e.target.value)}}
+          onChange={(e) => {
+            setPostText(e.target.value);
+          }}
           value={postText}
           variant="unstyled"
           size="md"
@@ -85,7 +91,7 @@ export default function CreateNewPostModal() {
         <Group justify="flex-end" mt={"xs"}>
           <Button
             variant="gradient"
-            onClick={() => handleCreateNewPost({ postText , setPostText})}
+            onClick={() => handleCreateNewPost({ postText, setPostText })}
             disabled={!postText.length || postText.length > 280 ? true : false}
             radius={"xl"}
             size="sm"
@@ -102,7 +108,16 @@ export default function CreateNewPostModal() {
   );
 }
 
-function DZ({ setImage }) {
+function DZ({
+  setImage,
+}: {
+  setImage: React.Dispatch<
+    React.SetStateAction<{
+      file: FileWithPath;
+      url: string;
+    } | null>
+  >;
+}) {
   return (
     <Dropzone
       onDrop={(files) => {
@@ -142,9 +157,17 @@ function DZ({ setImage }) {
       </Dropzone.Reject>
       <Dropzone.Idle>
         <Group>
-        <ActionIcon variant="light" size="xl" radius="xl" aria-label="Settings">
-      <IconPhotoPlus style={{ width: '70%', height: '70%' }} stroke={1.5} />
-    </ActionIcon>
+          <ActionIcon
+            variant="light"
+            size="xl"
+            radius="xl"
+            aria-label="Settings"
+          >
+            <IconPhotoPlus
+              style={{ width: "70%", height: "70%" }}
+              stroke={1.5}
+            />
+          </ActionIcon>
         </Group>
       </Dropzone.Idle>
     </Dropzone>
