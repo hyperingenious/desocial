@@ -15,10 +15,21 @@ import { useEffect } from "react";
 import { useProfileContext } from "../../contexts/ProfileContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IconArrowLeft } from "@tabler/icons-react";
+import type { Models } from "appwrite";
 
 export default function Profile() {
+  const profileContext = useProfileContext();
+
+  if (!profileContext) {
+    return (
+      <Center maw={400} h={100}>
+        <Text>Profile context not available</Text>
+      </Center>
+    );
+  }
+
   const { startFetchingProfiles, state, profileData, profilePostsData } =
-    useProfileContext();
+    profileContext;
 
   const location = useLocation();
   const userId = location.pathname.split("/")[2];
@@ -67,25 +78,32 @@ export default function Profile() {
   );
 }
 
-function AllPosts({ postsData }) {
+interface PostData {
+  $id: string;
+  // Add other post properties as needed
+}
+
+interface ProfileDataProps {
+  profileData: Models.Document;
+}
+
+function AllPosts({ postsData }: { postsData: PostData[] }) {
   return (
     <>
       <Divider mb={"xs"} />
       {postsData.map((el) => (
-        <Post document={el} />
+        <Post key={el.$id} document={el} />
       ))}
     </>
   );
 }
 
-function ProfileData({ profileData }) {
+function ProfileData({ profileData }: ProfileDataProps) {
   return (
     <Paper radius="md" p="lg" bg="var(--mantine-color-body)">
       <Avatar
         src={profileData.avatar_url || undefined}
         alt="profile"
-        width={120}
-        height={120}
         size={120}
         radius={120}
         mx="auto"
@@ -101,9 +119,6 @@ function ProfileData({ profileData }) {
       <Text ta="center" fz="lg" fw={500}>
         {profileData.name}
       </Text>
-      {/* <Text ta="center" c="dimmed" fz="sm">
-        My Intersts ivle dance and cing dacing dacning only and only
-      </Text> */}
       <Button radius={"lg"} variant="default" fullWidth mt="md">
         Send message
       </Button>
