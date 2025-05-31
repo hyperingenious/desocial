@@ -42,6 +42,7 @@ function reducer(state: InitialState, action: Action): InitialState {
       throw new Error(`Unhandled action type: ${(action as Action).type}`);
   }
 }
+
 type FeedContextValue = {
   state: InitialState;
   dispatch: React.ActionDispatch<[action: Action]>;
@@ -71,4 +72,5 @@ export function FeedProvider({ children }: { children: React.ReactNode }) {
   const value: FeedContextValue = { state, dispatch, startFetchingFeed };
   return <FeedContext.Provider value={value}>{children}</FeedContext.Provider>;
 }
+
 export type { FeedContextValue };

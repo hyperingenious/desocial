@@ -44,6 +44,7 @@ export function PostProvider({ children }: { children: React.ReactNode }) {
   const [postState, setPostState] = useState<
     "loading" | "finished" | "idle" | "error"
   >("idle");
+
   const [image, setImage] = useState<null | {
     file: FileWithPath;
     url: string;
