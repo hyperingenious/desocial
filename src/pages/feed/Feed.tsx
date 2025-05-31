@@ -29,10 +29,10 @@ function Feed() {
   } = feed;
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (isAuthenticated && feedState === "idle") {
       startFetchingFeed();
     }
-  }, [isAuthenticated, startFetchingFeed]);
+  }, [isAuthenticated, feedState, startFetchingFeed]);
 
   if (feedState === "idle") {
     return (
