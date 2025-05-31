@@ -18,7 +18,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import authService from "../appwrite/auth/auth";
 import { useAuthContext } from "../contexts/AuthContext";
-import type { Models } from "appwrite";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -72,7 +71,7 @@ function LoginContent() {
       name: "",
       password: "",
       course: "BCA",
-      semester: "1",
+      semester: 1,
     },
 
     validate: {
@@ -92,12 +91,8 @@ function LoginContent() {
     name: string;
     course: string;
     semester: number;
-    setUser: React.Dispatch<
-      React.SetStateAction<
-        Models.Session | Models.User<Models.Preferences> | null
-      >
-    >;
   }
+
   async function handleSubmit(values: HandleSubmit) {
     setButtonState("loading");
 
@@ -123,7 +118,7 @@ function LoginContent() {
       pt={"xl"}
       style={{ backgroundImage: "url(/src/assets/danger.jpg)" }}
     >
-      <Paper maw={400} radius="md" p="xl" withBorder {...props}>
+      <Paper maw={400} radius="md" p="xl" withBorder>
         <Text size="lg" fw={500} mb={"sm"}>
           Welcome to desocial, {type} with
         </Text>
@@ -162,8 +157,8 @@ function LoginContent() {
                 </Input.Wrapper>
                 <Input.Wrapper label="Semester" description="" error="">
                   <Input
-                    onChange={(event) =>
-                      form.setFieldValue("semester", event.target.value)
+                    onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
+                      form.setFieldValue("semester", Number(event.target.value))
                     }
                     component="select"
                     defaultValue={1}

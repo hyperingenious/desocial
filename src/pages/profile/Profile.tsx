@@ -80,7 +80,6 @@ export default function Profile() {
 
 interface PostData {
   $id: string;
-  // Add other post properties as needed
 }
 
 interface ProfileDataProps {
