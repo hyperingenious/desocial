@@ -30,8 +30,13 @@ export default function AppShell() {
     function () {
       if (auth !== null) {
         const { isAuthenticated, authState } = auth;
-        if (authState === "error") navigate("/authenticate");
-        if (isAuthenticated) navigate("/feed");
+        if (authState === "error") {
+          navigate("/authenticate");
+          return;
+        }
+        if (isAuthenticated && window.location.pathname === "/") {
+          navigate("/feed");
+        }
       }
     },
     [auth, navigate]
