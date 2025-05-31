@@ -15,7 +15,7 @@ import {
 import { GoogleButton } from "../components/GoogleButton";
 import { TwitterButton } from "../components/TwitterButton";
 
-export default function Register(props) {
+export default function Register() {
   const [type, toggle] = useToggle(["login", "register"]);
   const form = useForm({
     initialValues: {
@@ -35,7 +35,7 @@ export default function Register(props) {
   });
 
   return (
-    <Paper radius="md" p="xl" withBorder {...props}>
+    <Paper radius="md" p="xl" withBorder>
       <Text size="lg" fw={500}>
         Welcome to desocial, {type} with
       </Text>
